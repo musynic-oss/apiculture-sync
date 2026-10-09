@@ -1,5 +1,7 @@
 from fastapi import FastAPI, HTTPException, Header
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
+from pathlib import Path
 from pydantic import BaseModel
 import os, json, time
 import psycopg
@@ -82,3 +84,8 @@ def put_state(user_id: str, payload: Push, authorization: str | None = Header(de
     conn.commit()
     conn.close()
     return {"ok": True, "revision": new_rev}
+
+# Application web installable (PWA). Les routes /api/... définies ci-dessus restent prioritaires.
+WEB_DIR = Path(__file__).parent / "web"
+if WEB_DIR.exists():
+    app.mount("/", StaticFiles(directory=str(WEB_DIR), html=True), name="web")
