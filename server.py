@@ -1,10 +1,10 @@
 from fastapi import FastAPI, HTTPException, Header
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-from pathlib import Path
-import sqlite3, json, os, time
+import os, json, time
+import psycopg
 
-DB = Path(os.environ.get("APICULTURE_DB", "apiculture_sync.db"))
+DATABASE_URL = os.environ["DATABASE_URL"]
 SYNC_TOKEN = os.environ.get("APICULTURE_SYNC_TOKEN", "change-me")
 
 app = FastAPI(title="Apiculture Sync")
@@ -17,15 +17,17 @@ app.add_middleware(
 )
 
 def db():
-    c = sqlite3.connect(DB)
-    c.execute("""CREATE TABLE IF NOT EXISTS states(
-        user_id TEXT PRIMARY KEY,
-        revision INTEGER NOT NULL,
-        state TEXT NOT NULL,
-        updated_at INTEGER NOT NULL
-    )""")
-    c.commit()
-    return c
+    conn = psycopg.connect(DATABASE_URL)
+    conn.execute("""
+        CREATE TABLE IF NOT EXISTS states(
+            user_id TEXT PRIMARY KEY,
+            revision INTEGER NOT NULL,
+            state JSONB NOT NULL,
+            updated_at BIGINT NOT NULL
+        )
+    """)
+    conn.commit()
+    return conn
 
 def auth(authorization: str | None):
     if not authorization or authorization != f"Bearer {SYNC_TOKEN}":
@@ -43,28 +45,40 @@ def health(authorization: str | None = Header(default=None)):
 @app.get("/api/state/{user_id}")
 def get_state(user_id: str, authorization: str | None = Header(default=None)):
     auth(authorization)
-    c = db()
-    row = c.execute("SELECT revision,state,updated_at FROM states WHERE user_id=?", (user_id,)).fetchone()
-    c.close()
+    conn = db()
+    row = conn.execute(
+        "SELECT revision, state, updated_at FROM states WHERE user_id=%s",
+        (user_id,)
+    ).fetchone()
+    conn.close()
     if not row:
         raise HTTPException(status_code=404, detail="Aucune donnée")
-    return {"revision": row[0], "state": json.loads(row[1]), "updated_at": row[2]}
+    return {"revision": row[0], "state": row[1], "updated_at": row[2]}
 
 @app.put("/api/state/{user_id}")
 def put_state(user_id: str, payload: Push, authorization: str | None = Header(default=None)):
     auth(authorization)
-    c = db()
-    row = c.execute("SELECT revision FROM states WHERE user_id=?", (user_id,)).fetchone()
+    conn = db()
+    row = conn.execute(
+        "SELECT revision FROM states WHERE user_id=%s",
+        (user_id,)
+    ).fetchone()
     current = row[0] if row else 0
     if current != payload.base_revision:
-        c.close()
+        conn.close()
         raise HTTPException(status_code=409, detail="Révision différente")
     new_rev = current + 1
-    c.execute(
-        "INSERT INTO states(user_id,revision,state,updated_at) VALUES(?,?,?,?) "
-        "ON CONFLICT(user_id) DO UPDATE SET revision=excluded.revision,state=excluded.state,updated_at=excluded.updated_at",
+    conn.execute(
+        """
+        INSERT INTO states(user_id, revision, state, updated_at)
+        VALUES(%s,%s,%s::jsonb,%s)
+        ON CONFLICT(user_id) DO UPDATE SET
+            revision=EXCLUDED.revision,
+            state=EXCLUDED.state,
+            updated_at=EXCLUDED.updated_at
+        """,
         (user_id, new_rev, json.dumps(payload.state, ensure_ascii=False), int(time.time()))
     )
-    c.commit()
-    c.close()
+    conn.commit()
+    conn.close()
     return {"ok": True, "revision": new_rev}
