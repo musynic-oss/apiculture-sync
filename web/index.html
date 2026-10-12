@@ -69,7 +69,7 @@ label{display:block;font-size:12px;color:var(--muted);margin:7px 0 4px}input,sel
 </style>
 <link rel="manifest" href="manifest.json"><meta name="theme-color" content="#246fa8"></head>
 <body>
-<header><div class="grow"><b>🐝 Apiculture V1 bêta 1.25</b><div class="small">V1 — hors ligne + synchronisation cloud</div><div class="small" id="headerSyncState">Données locales</div></div><button id="headerSyncButton" class="soft" onclick="syncNow()">↻ Synchroniser</button><button class="light" onclick="showHelp()" title="Aide">?</button></header>
+<header><div class="grow"><b>🐝 Apiculture V1 bêta 1.26</b><div class="small">V1 — hors ligne + synchronisation cloud</div><div class="small" id="headerSyncState">Données locales</div></div><button id="headerSyncButton" class="soft" onclick="syncNow()">↻ Synchroniser</button><button class="light" onclick="showHelp()" title="Aide">?</button></header>
 <main>
 <div class="notice"><b>V1 bêta :</b> version optimisée pour une utilisation plus rapide. Les données restent enregistrées localement et la synchronisation cloud peut être configurée séparément.</div>
 <section id="home" class="view active"><div class="summary"><div class="stat"><b id="sh">0</b><div class="small">Ruches</div></div><div class="stat"><b id="sg">0</b><div class="small">Vertes</div></div><div class="stat"><b id="sw">0</b><div class="small">À surveiller</div></div><div class="stat"><b id="st">0</b><div class="small">Travaux à faire</div></div><div class="stat"><b id="se">0</b><div class="small">Ruches vides</div></div></div><div class="card"><h2 style="margin-top:0">À surveiller</h2><div id="watch" class="list"></div></div></section>
@@ -405,7 +405,7 @@ label{display:block;font-size:12px;color:var(--muted);margin:7px 0 4px}input,sel
   <div class="row" style="margin-top:12px"><button id="gVisitSaveBtn" onclick="saveGroupVisit()">Enregistrer</button><button class="light" onclick="closeGroupVisit()">Annuler</button></div>
 </div>
 <div id="taskmodal" class="modal"><div class="row"><h3 id="taskModalTitle" class="grow" style="margin:0">Nouveau travail</h3><button class="light" onclick="closeTask()">✕</button></div><label>Choisir dans la liste standard</label><div id="taskTemplateChecks" class="checkgrid"></div><label>Ou ajouter un travail libre</label><input id="ttext" placeholder="Écrire un travail ponctuel"><div class="small" style="margin-top:4px">Tu peux utiliser la liste, la saisie libre, ou les deux.</div><label id="taskDateLabel">Date prévue</label><input id="tdate" type="date"><div id="taskPriorityBlock"><label>Priorité</label><select id="tprio"><option>Normale</option><option>Importante</option><option>Urgente</option></select></div><label>Remarque</label><textarea id="tnote"></textarea><div id="ttarget" class="small" style="margin:8px 0"></div><div class="row"><button id="taskSaveBtn" onclick="saveTask()">Créer</button><button class="light" onclick="closeTask()">Annuler</button></div></div>
-<div id="cloudmodal" class="modal"><div class="row"><h3 class="grow" style="margin:0">Synchronisation cloud</h3><button class="light" onclick="closeCloudConfig()">✕</button></div><div class="small" style="margin-top:6px">Ces trois informations seront remplies lorsque le serveur V1 sera installé.</div><label>Adresse du serveur</label><input id="cloudUrl" type="url" placeholder="https://mon-apiculture.exemple.ch"><label>Identifiant</label><input id="cloudUser" type="text" placeholder="ex. nicolas"><label>Clé d’accès</label><input id="cloudToken" type="password" placeholder="clé privée"><div class="row" style="margin-top:10px"><button onclick="saveCloudConfig()">Enregistrer</button><button class="soft" onclick="testCloud()">Tester</button><button class="light" onclick="closeCloudConfig()">Annuler</button></div></div>
+<div id="cloudmodal" class="modal"><div class="row"><h3 class="grow" style="margin:0">Synchronisation cloud</h3><button class="light" onclick="closeCloudConfig()">✕</button></div><div class="small" style="margin-top:6px">L’adresse du serveur et l’identifiant sont automatiques. La clé d’accès n’est demandée qu’une fois sur cet appareil.</div><label>Adresse du serveur</label><input id="cloudUrl" type="url" placeholder="https://mon-apiculture.exemple.ch"><label>Identifiant</label><input id="cloudUser" type="text" placeholder="ex. nicolas"><label>Clé d’accès</label><input id="cloudToken" type="password" placeholder="clé privée"><div class="row" style="margin-top:10px"><button onclick="saveCloudConfig()">Enregistrer</button><button class="soft" onclick="testCloud()">Tester</button><button class="light" onclick="closeCloudConfig()">Annuler</button></div></div>
 <div id="qmodal" class="modal"><div class="row"><h3 class="grow" style="margin:0">Modifier la reine</h3><button class="light" onclick="closeQueen()">✕</button></div><label>Année</label><input id="qyear" type="number" oninput="updateQueenColorFromYear()"><label>Couleur</label><select id="qcolor"><option value="qgrey">Gris / non marquée</option><option value="qwhite">Blanc</option><option value="qyellow">Jaune</option><option value="qred">Rouge</option><option value="qgreen">Vert</option><option value="qblue">Bleu</option></select><div class="small" style="margin-top:5px">La couleur est proposée automatiquement à partir de l’année. Elle reste modifiable si nécessaire.</div><label>Statut</label><select id="qmarked" onchange="updateQueenColorFromYear()"><option value="false">Non marquée</option><option value="true">Marquée</option></select><label>Provenance <span class="small">(facultatif)</span></label><input id="qorigin" type="text" placeholder="Ex. élevage personnel, éleveur, nucleus..."><label>Race / lignée <span class="small">(facultatif)</span></label><input id="qrace" type="text" placeholder="Ex. Carnica, Buckfast, autre..."><label>Pédigrée <span class="small">(facultatif)</span></label><textarea id="qpedigree" placeholder="Référence de lignée, ascendance, code d’élevage..."></textarea><div class="row" style="margin-top:10px"><button onclick="saveQueen()">Enregistrer</button><button class="light" onclick="closeQueen()">Annuler</button></div></div>
 <div id="histmodal" class="modal"><div class="row"><h3 class="grow" style="margin:0">Modifier l’entrée d’historique</h3><button class="light" onclick="closeHistoryEdit()">✕</button></div><label>Date</label><input id="histdate" type="date"><label>Texte</label><textarea id="histtext"></textarea><div class="row" style="margin-top:10px"><button onclick="saveHistoryEdit()">Enregistrer</button><button class="light" onclick="closeHistoryEdit()">Annuler</button></div></div>
 <div id="retromodal" class="modal"><div class="row"><h3 class="grow" style="margin:0">Saisie rétroactive</h3><button class="light" onclick="closeRetroEvent()">✕</button></div><label>Ruche</label><select id="retroHive"></select><label>Date réelle</label><input id="retroDate" type="date"><label>Type</label><select id="retroType"><option>Observation</option><option>Visite</option><option>Travail effectué</option><option>Nourrissement</option><option>Traitement</option><option>Division</option><option>Déplacement</option><option>Remérage</option><option>Euthanasie / soufrage</option><option>Bourdonneuse</option><option>Autre</option></select><label>Détail</label><textarea id="retroText" placeholder="Décrire ce qui a été fait ou observé"></textarea><div class="row" style="margin-top:10px"><button onclick="saveRetroEvent()">Enregistrer</button><button class="light" onclick="closeRetroEvent()">Annuler</button></div></div>
@@ -658,7 +658,11 @@ function renderActiveView(){
   else if(v==='queens')renderQueens();
   else if(v==='help')refreshHelpDiagnostic();
   if(current&&sheet.classList.contains('open'))renderSheet();
-  updateBackupStatus();updateCloudStatus();
+  updateBackupStatus();
+restorePersistentCloudConfig().then(()=>{
+  updateCloudStatus();
+  if(navigator.onLine) scheduleAutoSync(1200);
+}).catch(()=>updateCloudStatus());
 }
 function queueRender(){
   if(renderQueued)return;renderQueued=true;
@@ -1731,12 +1735,108 @@ function closeRetroEvent(){retromodal.classList.remove('open');if(!sheet.classLi
 function saveRetroEvent(){let id=Number(retroHive.value),h=data.find(x=>x.id===id),txt=retroText.value.trim();if(!h||!txt)return;let d=retroDate.value||today(),type=retroType.value;h.history.unshift({date:d,text:type+' : '+txt});if(type==='Visite')h.last=d.split('-').reverse().slice(0,2).join('.')+' — '+txt;closeRetroEvent();save();renderGeneralHistory()}
 function csvEsc(v){v=String(v??'');return '"'+v.replaceAll('"','""')+'"'}
 function exportHistoryCsv(){let rows=filteredHistoryRows();let csv='Date;Ruche;Type;Détail\n'+rows.map(r=>[r.date,'Ruche '+r.hive,r.type,r.text].map(csvEsc).join(';')).join('\n');let blob=new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='historique_apiculture_filtre.csv';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000)}
-function cloudConfig(){try{return JSON.parse(localStorage.getItem('apiculture_v1_cloud_config')||'{}')}catch(e){return {}}}
-function openCloudConfig(){let c=cloudConfig();cloudUrl.value=c.url||'';cloudUser.value=c.user||'';cloudToken.value=c.token||'';cloudmodal.classList.add('open');bg.classList.add('open')}
+const DEFAULT_CLOUD_URL='https://apiculture-sync.onrender.com';
+const DEFAULT_CLOUD_USER='nicolas';
+
+function rawCloudConfig(){
+  try{return JSON.parse(localStorage.getItem('apiculture_v1_cloud_config')||'{}')||{}}
+  catch(e){return {}}
+}
+function cloudConfig(){
+  const c=rawCloudConfig();
+  return {
+    url:normalizeCloudUrl(c.url)||DEFAULT_CLOUD_URL,
+    user:(c.user||DEFAULT_CLOUD_USER).trim(),
+    token:(c.token||'').trim()
+  };
+}
+function openCloudConfig(){
+  let c=cloudConfig();
+  cloudUrl.value=c.url||DEFAULT_CLOUD_URL;
+  cloudUser.value=c.user||DEFAULT_CLOUD_USER;
+  cloudToken.value=c.token||'';
+  cloudmodal.classList.add('open');bg.classList.add('open');
+}
 function closeCloudConfig(){cloudmodal.classList.remove('open');if(!sheet.classList.contains('open'))bg.classList.remove('open')}
 function normalizeCloudUrl(v){return (v||'').trim().replace(/\/+$/,'')}
-function saveCloudConfig(){let c={url:normalizeCloudUrl(cloudUrl.value),user:cloudUser.value.trim(),token:cloudToken.value.trim()};localStorage.setItem('apiculture_v1_cloud_config',JSON.stringify(c));closeCloudConfig();updateCloudStatus()}
-function cloudHeaders(){let c=cloudConfig();return {'Content-Type':'application/json','Authorization':'Bearer '+(c.token||'')}}
+
+function openCloudStore(){
+  return new Promise((resolve,reject)=>{
+    try{
+      const req=indexedDB.open('apiculture_v1_persistent',1);
+      req.onupgradeneeded=()=>{let db=req.result;if(!db.objectStoreNames.contains('settings'))db.createObjectStore('settings')};
+      req.onsuccess=()=>resolve(req.result);
+      req.onerror=()=>reject(req.error);
+    }catch(e){reject(e)}
+  });
+}
+async function persistentCloudGet(){
+  try{
+    const db=await openCloudStore();
+    return await new Promise((resolve,reject)=>{
+      const tx=db.transaction('settings','readonly'),req=tx.objectStore('settings').get('cloudConfig');
+      req.onsuccess=()=>resolve(req.result||null);
+      req.onerror=()=>reject(req.error);
+    });
+  }catch(e){return null}
+}
+async function persistentCloudSet(c){
+  try{
+    const db=await openCloudStore();
+    await new Promise((resolve,reject)=>{
+      const tx=db.transaction('settings','readwrite');
+      tx.objectStore('settings').put(c,'cloudConfig');
+      tx.oncomplete=()=>resolve();
+      tx.onerror=()=>reject(tx.error);
+    });
+  }catch(e){}
+}
+async function restorePersistentCloudConfig(){
+  const current=rawCloudConfig();
+  const saved=await persistentCloudGet();
+  const merged={
+    url:normalizeCloudUrl(current.url||saved?.url||DEFAULT_CLOUD_URL),
+    user:(current.user||saved?.user||DEFAULT_CLOUD_USER).trim(),
+    token:(current.token||saved?.token||'').trim()
+  };
+  localStorage.setItem('apiculture_v1_cloud_config',JSON.stringify(merged));
+  await persistentCloudSet(merged);
+  try{if(navigator.storage&&navigator.storage.persist)await navigator.storage.persist()}catch(e){}
+  return merged;
+}
+function cloudHeaders(){
+  let c=cloudConfig(),h={'Content-Type':'application/json'};
+  if(c.token)h['Authorization']='Bearer '+c.token;
+  return h;
+}
+async function establishCloudSession(c=cloudConfig()){
+  if(!c.token)return false;
+  let r=await fetch(c.url+'/api/session',{
+    method:'POST',
+    headers:{'Authorization':'Bearer '+c.token},
+    credentials:'include'
+  });
+  if(!r.ok)throw new Error('Clé d’accès refusée');
+  localStorage.setItem('apiculture_v1_session_ready','1');
+  return true;
+}
+async function saveCloudConfig(){
+  let c={
+    url:normalizeCloudUrl(cloudUrl.value)||DEFAULT_CLOUD_URL,
+    user:cloudUser.value.trim()||DEFAULT_CLOUD_USER,
+    token:cloudToken.value.trim()
+  };
+  if(!c.token)return alert('Entre la clé d’accès une seule fois pour mémoriser la connexion sur cet appareil.');
+  localStorage.setItem('apiculture_v1_cloud_config',JSON.stringify(c));
+  await persistentCloudSet(c);
+  try{
+    await establishCloudSession(c);
+    try{if(navigator.storage&&navigator.storage.persist)await navigator.storage.persist()}catch(e){}
+    closeCloudConfig();updateCloudStatus('Connexion mémorisée sur cet appareil.');
+  }catch(e){
+    alert('Impossible de mémoriser la connexion : '+e.message);
+  }
+}
 function updateCloudStatus(msg){
   let el=document.getElementById('cloudStatus'),head=document.getElementById('headerSyncState');
   let c=cloudConfig(),last=localStorage.getItem('apiculture_v1_last_sync');
@@ -1745,20 +1845,122 @@ function updateCloudStatus(msg){
     if(head)head.textContent=msg;
     return
   }
-  if(!c.url||!c.user||!c.token){
+  if(!c.url||!c.user){
     if(el)el.textContent='Non configurée.';
     if(head)head.textContent=navigator.onLine?'Données locales':'Hors ligne — données locales';
     return
   }
-  let t=last?'Dernière synchro : '+new Date(last).toLocaleString('fr-CH'):'Configurée, jamais synchronisée.';
+  let t=last?'Dernière synchro : '+new Date(last).toLocaleString('fr-CH'):(c.token||localStorage.getItem('apiculture_v1_session_ready')==='1'?'Connexion mémorisée, jamais synchronisée.':'Connexion automatique à vérifier.');
   if(el)el.textContent=t;
   if(head)head.textContent=navigator.onLine?t:'Hors ligne — synchro en attente';
 }
-async function testCloud(){let c=cloudConfig();if(!c.url||!c.user||!c.token)return alert('Complète les trois champs.');try{let r=await fetch(c.url+'/api/health',{headers:cloudHeaders()});if(!r.ok)throw new Error('HTTP '+r.status);alert('Connexion au serveur : OK')}catch(e){alert('Connexion impossible : '+e.message)}}
-function applyCloudState(state){if(!state||state.app!=='Apiculture'||!Array.isArray(state.hives)||!Array.isArray(state.apiaries))throw new Error('Données cloud invalides');data=state.hives;apiaries=state.apiaries;currentApiaryId=state.currentApiaryId||(apiaries[0]&&apiaries[0].id)||null;if(state.prefs)prefs=state.prefs;if(Array.isArray(state.medicationStock))medicationStock=state.medicationStock;if(Array.isArray(state.harvests))harvests=state.harvests;if(state.officialAdmin&&typeof state.officialAdmin==='object')officialAdmin=state.officialAdmin;if(Array.isArray(state.conceptVersions)&&state.conceptVersions.length)conceptVersions=state.conceptVersions;if(state.activeConceptId)activeConceptId=state.activeConceptId;if(Array.isArray(state.usefulLinks))usefulLinks=state.usefulLinks;save(false)}
-async function pushCloud(baseRevision){let c=cloudConfig(),payload=buildBackupPayload();let r=await fetch(c.url+'/api/state/'+encodeURIComponent(c.user),{method:'PUT',headers:cloudHeaders(),body:JSON.stringify({base_revision:baseRevision,state:payload})});let body=await r.json().catch(()=>({}));if(r.status===409)return {conflict:true,...body};if(!r.ok)throw new Error(body.detail||('HTTP '+r.status));localStorage.setItem('apiculture_v1_cloud_revision',String(body.revision));localStorage.setItem('apiculture_v1_last_sync',new Date().toISOString());localStorage.setItem('apiculture_v1_last_synced_local_change',localStorage.getItem('apiculture_v1_local_changed_at')||'');return {ok:true,...body}}
-async function syncNow(silent=false){let c=cloudConfig();if(!c.url||!c.user||!c.token){if(!silent)openCloudConfig();return}let btn=document.getElementById('headerSyncButton'),old=btn.textContent;btn.textContent='↻ Synchro…';try{let r=await fetch(c.url+'/api/state/'+encodeURIComponent(c.user),{headers:cloudHeaders()});if(r.status===404){await pushCloud(0);btn.textContent='✓ Synchronisé';updateCloudStatus();return}let remote=await r.json();if(!r.ok)throw new Error(remote.detail||('HTTP '+r.status));let lastRev=Number(localStorage.getItem('apiculture_v1_cloud_revision')||0),localChanged=localStorage.getItem('apiculture_v1_local_changed_at')||'',lastSyncedChange=localStorage.getItem('apiculture_v1_last_synced_local_change')||'';let hasLocalChanges=localChanged!==lastSyncedChange;if(remote.revision>lastRev&&hasLocalChanges){let backup=buildBackupPayload();localStorage.setItem('apiculture_v1_conflict_backup',JSON.stringify(backup));let takeCloud=confirm('Des modifications existent sur cet appareil ET dans le cloud.\n\nOK = charger la version cloud.\nAnnuler = garder cette version et l’envoyer dans le cloud.\n\nUne copie locale de sécurité est conservée.');if(takeCloud){applyCloudState(remote.state);localStorage.setItem('apiculture_v1_cloud_revision',String(remote.revision));localStorage.setItem('apiculture_v1_last_sync',new Date().toISOString());localStorage.setItem('apiculture_v1_last_synced_local_change',localStorage.getItem('apiculture_v1_local_changed_at')||'')}else{let res=await pushCloud(remote.revision);if(res.conflict)throw new Error('Le cloud a encore changé. Relance la synchronisation.')}}else if(remote.revision>lastRev&&!hasLocalChanges){applyCloudState(remote.state);localStorage.setItem('apiculture_v1_cloud_revision',String(remote.revision));localStorage.setItem('apiculture_v1_last_sync',new Date().toISOString());localStorage.setItem('apiculture_v1_last_synced_local_change',localStorage.getItem('apiculture_v1_local_changed_at')||'')}else if(hasLocalChanges){let res=await pushCloud(remote.revision);if(res.conflict)throw new Error('Conflit de synchronisation. Relance la synchronisation.')}else{localStorage.setItem('apiculture_v1_cloud_revision',String(remote.revision));localStorage.setItem('apiculture_v1_last_sync',new Date().toISOString())}btn.textContent='✓ Synchronisé';updateCloudStatus()}catch(e){btn.textContent='⚠ Synchro';updateCloudStatus('Erreur de synchro : '+e.message);if(!silent)alert('Synchronisation impossible : '+e.message)}finally{setTimeout(()=>btn.textContent=old,1800)}}
-
+async function testCloud(){
+  let c=cloudConfig();
+  if(!c.url||!c.user)return alert('Configuration invalide.');
+  try{
+    if(c.token)await establishCloudSession(c);
+    let r=await fetch(c.url+'/api/health',{headers:cloudHeaders(),credentials:'include'});
+    if(r.status===401)throw new Error('clé nécessaire');
+    if(!r.ok)throw new Error('HTTP '+r.status);
+    localStorage.setItem('apiculture_v1_session_ready','1');
+    alert('Connexion au serveur : OK');
+  }catch(e){
+    if(String(e.message).includes('clé nécessaire')){
+      alert('La connexion doit être mémorisée une seule fois. Entre la clé d’accès puis appuie sur Enregistrer.');
+    }else{
+      alert('Connexion impossible : '+e.message);
+    }
+  }
+}
+function applyCloudState(state){
+  if(!state||state.app!=='Apiculture'||!Array.isArray(state.hives)||!Array.isArray(state.apiaries))throw new Error('Données cloud invalides');
+  data=state.hives;apiaries=state.apiaries;
+  currentApiaryId=state.currentApiaryId||(apiaries[0]&&apiaries[0].id)||null;
+  if(state.prefs)prefs=state.prefs;
+  if(Array.isArray(state.medicationStock))medicationStock=state.medicationStock;
+  if(Array.isArray(state.harvests))harvests=state.harvests;
+  if(state.officialAdmin&&typeof state.officialAdmin==='object')officialAdmin=state.officialAdmin;
+  if(Array.isArray(state.conceptVersions)&&state.conceptVersions.length)conceptVersions=state.conceptVersions;
+  if(state.activeConceptId)activeConceptId=state.activeConceptId;
+  if(Array.isArray(state.usefulLinks))usefulLinks=state.usefulLinks;
+  save(false)
+}
+async function pushCloud(baseRevision){
+  let c=cloudConfig(),payload=buildBackupPayload();
+  let r=await fetch(c.url+'/api/state/'+encodeURIComponent(c.user),{
+    method:'PUT',headers:cloudHeaders(),credentials:'include',
+    body:JSON.stringify({base_revision:baseRevision,state:payload})
+  });
+  let body=await r.json().catch(()=>({}));
+  if(r.status===401)throw new Error('SESSION_REQUIRED');
+  if(r.status===409)return {conflict:true,...body};
+  if(!r.ok)throw new Error(body.detail||('HTTP '+r.status));
+  localStorage.setItem('apiculture_v1_cloud_revision',String(body.revision));
+  localStorage.setItem('apiculture_v1_last_sync',new Date().toISOString());
+  localStorage.setItem('apiculture_v1_last_synced_local_change',localStorage.getItem('apiculture_v1_local_changed_at')||'');
+  return {ok:true,...body}
+}
+async function syncNow(silent=false){
+  let c=cloudConfig();
+  if(!c.url||!c.user){if(!silent)openCloudConfig();return}
+  let btn=document.getElementById('headerSyncButton'),old=btn.textContent;
+  btn.textContent='↻ Synchro…';
+  try{
+    let r=await fetch(c.url+'/api/state/'+encodeURIComponent(c.user),{headers:cloudHeaders(),credentials:'include'});
+    if(r.status===401)throw new Error('SESSION_REQUIRED');
+    if(r.status===404){
+      await pushCloud(0);btn.textContent='✓ Synchronisé';updateCloudStatus();return
+    }
+    let remote=await r.json();
+    if(!r.ok)throw new Error(remote.detail||('HTTP '+r.status));
+    let lastRev=Number(localStorage.getItem('apiculture_v1_cloud_revision')||0),
+        localChanged=localStorage.getItem('apiculture_v1_local_changed_at')||'',
+        lastSyncedChange=localStorage.getItem('apiculture_v1_last_synced_local_change')||'',
+        hasLocalChanges=localChanged!==lastSyncedChange;
+    if(remote.revision>lastRev&&hasLocalChanges){
+      let backup=buildBackupPayload();
+      localStorage.setItem('apiculture_v1_conflict_backup',JSON.stringify(backup));
+      let takeCloud=confirm('Des modifications existent sur cet appareil ET dans le cloud.\n\nOK = charger la version cloud.\nAnnuler = garder cette version et l’envoyer dans le cloud.\n\nUne copie locale de sécurité est conservée.');
+      if(takeCloud){
+        applyCloudState(remote.state);
+        localStorage.setItem('apiculture_v1_cloud_revision',String(remote.revision));
+        localStorage.setItem('apiculture_v1_last_sync',new Date().toISOString());
+        localStorage.setItem('apiculture_v1_last_synced_local_change',localStorage.getItem('apiculture_v1_local_changed_at')||'')
+      }else{
+        let res=await pushCloud(remote.revision);
+        if(res.conflict)throw new Error('Le cloud a encore changé. Relance la synchronisation.')
+      }
+    }else if(remote.revision>lastRev&&!hasLocalChanges){
+      applyCloudState(remote.state);
+      localStorage.setItem('apiculture_v1_cloud_revision',String(remote.revision));
+      localStorage.setItem('apiculture_v1_last_sync',new Date().toISOString());
+      localStorage.setItem('apiculture_v1_last_synced_local_change',localStorage.getItem('apiculture_v1_local_changed_at')||'')
+    }else if(hasLocalChanges){
+      let res=await pushCloud(remote.revision);
+      if(res.conflict)throw new Error('Conflit de synchronisation. Relance la synchronisation.')
+    }else{
+      localStorage.setItem('apiculture_v1_cloud_revision',String(remote.revision));
+      localStorage.setItem('apiculture_v1_last_sync',new Date().toISOString())
+    }
+    localStorage.setItem('apiculture_v1_session_ready','1');
+    btn.textContent='✓ Synchronisé';updateCloudStatus()
+  }catch(e){
+    if(e.message==='SESSION_REQUIRED'){
+      localStorage.removeItem('apiculture_v1_session_ready');
+      btn.textContent='⚠ Connexion';
+      updateCloudStatus('Connexion à mémoriser une seule fois.');
+      if(!silent){
+        alert('La connexion n’est plus mémorisée. Entre la clé d’accès une fois, puis appuie sur Enregistrer.');
+        openCloudConfig();
+      }
+    }else{
+      btn.textContent='⚠ Synchro';updateCloudStatus('Erreur de synchro : '+e.message);
+      if(!silent)alert('Synchronisation impossible : '+e.message)
+    }
+  }finally{
+    setTimeout(()=>btn.textContent=old,1800)
+  }
+}
 
 
 
