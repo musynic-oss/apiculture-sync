@@ -1,12 +1,12 @@
-APICULTURE V1 BÊTA 1.26
+APICULTURE V1 BÊTA 1.27
 
-Corrections importantes :
-- démarrage hors ligne immédiat depuis le cache : plus d'écran noir pendant le réveil de Render ;
-- adresse serveur et identifiant remplis automatiquement ;
-- connexion mémorisée avec cookie sécurisé HttpOnly pendant un an ;
-- configuration également dupliquée dans IndexedDB ;
-- demande de stockage persistant au navigateur.
+Nouveauté :
+- Liste à faire générale directement sur l'accueil.
+- Aucun rucher, aucune ruche, aucune date, aucune priorité à remplir.
+- Écrire une ligne > Ajouter.
+- Cocher quand c'est fait : la ligne disparaît de la liste active.
+- Les éléments terminés restent conservés dans les données.
+- Inclus dans sauvegarde et synchronisation cloud.
 
 Déploiement :
-remplacer server.py et le dossier web dans le dépôt GitHub, puis laisser Render redéployer.
-Après mise à jour, saisir la clé d'accès UNE DERNIÈRE FOIS dans Plus > Synchronisation > Configurer > Enregistrer.
+remplacer le dossier web dans GitHub (server.py peut rester identique à la V1.26), puis redéployer Render.

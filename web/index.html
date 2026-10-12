@@ -69,10 +69,21 @@ label{display:block;font-size:12px;color:var(--muted);margin:7px 0 4px}input,sel
 </style>
 <link rel="manifest" href="manifest.json"><meta name="theme-color" content="#246fa8"></head>
 <body>
-<header><div class="grow"><b>🐝 Apiculture V1 bêta 1.26</b><div class="small">V1 — hors ligne + synchronisation cloud</div><div class="small" id="headerSyncState">Données locales</div></div><button id="headerSyncButton" class="soft" onclick="syncNow()">↻ Synchroniser</button><button class="light" onclick="showHelp()" title="Aide">?</button></header>
+<header><div class="grow"><b>🐝 Apiculture V1 bêta 1.27</b><div class="small">V1 — hors ligne + synchronisation cloud</div><div class="small" id="headerSyncState">Données locales</div></div><button id="headerSyncButton" class="soft" onclick="syncNow()">↻ Synchroniser</button><button class="light" onclick="showHelp()" title="Aide">?</button></header>
 <main>
 <div class="notice"><b>V1 bêta :</b> version optimisée pour une utilisation plus rapide. Les données restent enregistrées localement et la synchronisation cloud peut être configurée séparément.</div>
-<section id="home" class="view active"><div class="summary"><div class="stat"><b id="sh">0</b><div class="small">Ruches</div></div><div class="stat"><b id="sg">0</b><div class="small">Vertes</div></div><div class="stat"><b id="sw">0</b><div class="small">À surveiller</div></div><div class="stat"><b id="st">0</b><div class="small">Travaux à faire</div></div><div class="stat"><b id="se">0</b><div class="small">Ruches vides</div></div></div><div class="card"><h2 style="margin-top:0">À surveiller</h2><div id="watch" class="list"></div></div></section>
+<section id="home" class="view active">
+<div class="summary"><div class="stat"><b id="sh">0</b><div class="small">Ruches</div></div><div class="stat"><b id="sg">0</b><div class="small">Vertes</div></div><div class="stat"><b id="sw">0</b><div class="small">À surveiller</div></div><div class="stat"><b id="st">0</b><div class="small">Travaux à faire</div></div><div class="stat"><b id="se">0</b><div class="small">Ruches vides</div></div></div>
+<div class="card"><h2 style="margin-top:0">À surveiller</h2><div id="watch" class="list"></div></div>
+<div class="card">
+  <h2 style="margin-top:0">Liste à faire</h2>
+  <div class="row">
+    <input id="generalTodoInput" class="grow" placeholder="Ex. réparer un toit, prendre du matériel..." onkeydown="if(event.key==='Enter')addGeneralTodo()">
+    <button onclick="addGeneralTodo()">Ajouter</button>
+  </div>
+  <div id="generalTodoList" class="list" style="margin-top:10px"></div>
+</div>
+</section>
 <section id="hives" class="view"><div class="card">
 <div class="row"><div class="grow"><h2 id="apiaryTitle" style="margin:0">Rucher</h2><div id="apiaryMeta" class="apiary-meta"></div></div><button id="organizeBtn" class="soft" onclick="toggleOrganize()">Organiser le rucher</button><button id="selectBtn" class="light" onclick="toggleSelect()">Sélection multiple</button></div>
 <div class="apiarybar">
@@ -121,7 +132,7 @@ label{display:block;font-size:12px;color:var(--muted);margin:7px 0 4px}input,sel
       <h3>Utilisation rapide</h3>
       <div class="list">
         <div class="item"><b>Ruchers</b><div class="small">Ouvre une ruche pour sa fiche. Le point de couleur permet de changer son état.</div></div>
-        <div class="item"><b>Travaux</b><div class="small">Travaux individuels ou groupés. Une fois terminés, ils restent dans l’historique.</div></div>
+        <div class="item"><b>Travaux</b><div class="small">Travaux individuels ou groupés. Une fois terminés, ils restent dans l’historique.</div></div><div class="item"><b>Liste à faire</b><div class="small">Liste générale sur l’accueil, sans lien obligatoire avec une ruche. Écris, ajoute, coche quand c’est fait.</div></div>
         <div class="item"><b>Contrôle</b><div class="small">Type de contrôle → interventions → travail à prévoir → observation.</div></div>
         <div class="item"><b>Archives</b><div class="small">Les écrans normaux archivent. La suppression définitive se fait uniquement depuis Archives.</div></div>
         <div class="item"><b>Sauvegarde</b><div class="small">Plus → Sauvegarde / restauration permet d’exporter une copie complète.</div></div>
@@ -580,6 +591,7 @@ migrateUsefulLinks123();
 
 
 let harvests=(()=>{try{let x=JSON.parse(localStorage.getItem('api_v1_harvests')||'[]');return Array.isArray(x)?x:[]}catch(e){return []}})();
+let generalTodos=(()=>{try{let x=JSON.parse(localStorage.getItem('api_v1_general_todos')||'[]');return Array.isArray(x)?x:[]}catch(e){return []}})();
 let medicationStock=(()=>{try{let x=JSON.parse(localStorage.getItem('api_v1_med_stock')||'[]');return Array.isArray(x)?x:[]}catch(e){return []}})();
 let stockMoveId=null;
 // Migration V1.12 : l'ancien jeu de démonstration n'avait que 12 ruches alors que le plan réel en prévoit 18.
@@ -641,7 +653,7 @@ function updateStats(){
 function renderActiveView(){
   renderApiarySelector();updateStats();
   const v=document.querySelector('.view.active')?.id||'home';
-  if(v==='home')renderHome();
+  if(v==='home'){renderHome();renderGeneralTodos();}
   else if(v==='hives')renderHives();
   else if(v==='tasks')renderTasks('open');
   else if(v==='calendar')renderCal();
@@ -677,6 +689,7 @@ function save(markChanged=true){
   localStorage.setItem('api_v13_prefs',JSON.stringify(prefs));
   localStorage.setItem('api_v1_med_stock',JSON.stringify(medicationStock));
   localStorage.setItem('api_v1_harvests',JSON.stringify(harvests));
+  localStorage.setItem('api_v1_general_todos',JSON.stringify(generalTodos));
   localStorage.setItem('api_v1_official_admin',JSON.stringify(officialAdmin));
   localStorage.setItem('api_v1_concept_versions',JSON.stringify(conceptVersions));
   localStorage.setItem('api_v1_active_concept',activeConceptId||'');
@@ -794,6 +807,37 @@ function saveNewHives(){
 }
 
 function renderAll(){renderActiveView()}
+
+function renderGeneralTodos(){
+  if(!window.generalTodoList)return;
+  const open=generalTodos.filter(x=>!x.done).sort((a,b)=>(a.createdAt||'').localeCompare(b.createdAt||''));
+  generalTodoList.innerHTML=open.length?open.map(x=>`
+    <label class="item row" style="cursor:pointer">
+      <input type="checkbox" onchange="toggleGeneralTodo('${escapeAttr(x.id)}',this.checked)" style="width:auto;transform:scale(1.25)">
+      <span class="grow">${escapeHtml(x.text||'')}</span>
+    </label>`).join(''):'<div class="small">Rien à faire pour le moment.</div>';
+}
+function addGeneralTodo(){
+  if(!window.generalTodoInput)return;
+  const text=generalTodoInput.value.trim();
+  if(!text)return;
+  generalTodos.push({
+    id:'todo_'+Date.now()+'_'+Math.random().toString(36).slice(2,6),
+    text,
+    done:false,
+    createdAt:new Date().toISOString(),
+    doneAt:''
+  });
+  generalTodoInput.value='';
+  save();
+}
+function toggleGeneralTodo(id,checked){
+  const x=generalTodos.find(v=>v.id===id);if(!x)return;
+  x.done=!!checked;
+  x.doneAt=checked?new Date().toISOString():'';
+  save();
+}
+
 function renderHome(){watch.innerHTML='';const activeApiaryIds=new Set(apiaries.filter(a=>!a.archived).map(a=>a.id));data.filter(h=>!h.archived&&activeApiaryIds.has(h.apiaryId)&&(h.status!=='green'||h.m>=3||h.tasks.some(t=>!t.done))).forEach(h=>{let d=document.createElement('div');d.className='item';let ot=h.tasks.filter(t=>!t.done).length;d.innerHTML=`<div class="row"><span class="dot ${h.status}"></span><div class="grow"><b>${apiaryNameById(h.apiaryId)} · Ruche ${hiveNo(h)}</b><div class="small">${h.status==='empty'?'VIDE — boîte présente sans colonie':h.last}</div>${h.m?`<span class="badge ${h.m>=3?'alert':'warn'}">M ${h.m}</span>`:''}${ot?`<span class="badge warn">📋 ${ot}</span>`:''}${h.status==='empty'?'<span class="empty-label">VIDE</span>':''}</div><button class="light" onclick="switchApiary('${h.apiaryId}');show('hives');openHive(${h.id})">Ouvrir</button></div>`;watch.appendChild(d)})}
 function visible(h){if(h.archived||h.apiaryId!==currentApiaryId)return false;let ok=filter==='all'||(filter==='tasks'&&h.tasks.some(t=>!t.done))||h.status===filter;let q=(document.getElementById('searchHive')?.value||'').toLowerCase().trim();if(!q)return ok;let blob=[hiveNo(h),h.last,h.lifeStatus,h.q?.year,h.q?.num,...(h.notes||[]).filter(n=>!n.archived).map(n=>n.text),...h.tasks.map(t=>t.text+' '+(t.note||''))].join(' ').toLowerCase();return ok&&blob.includes(q)}
 let organizeMode=false,dragHiveId=null,touchDrag=null,lastDropTarget=null;
@@ -1883,6 +1927,7 @@ function applyCloudState(state){
   if(Array.isArray(state.conceptVersions)&&state.conceptVersions.length)conceptVersions=state.conceptVersions;
   if(state.activeConceptId)activeConceptId=state.activeConceptId;
   if(Array.isArray(state.usefulLinks))usefulLinks=state.usefulLinks;
+  if(Array.isArray(state.generalTodos))generalTodos=state.generalTodos;
   save(false)
 }
 async function pushCloud(baseRevision){
@@ -2257,7 +2302,8 @@ function buildBackupPayload(){
     officialAdmin:officialAdmin,
     conceptVersions:conceptVersions,
     activeConceptId:activeConceptId,
-    usefulLinks:usefulLinks
+    usefulLinks:usefulLinks,
+    generalTodos:generalTodos
   };
 }
 function exportFullBackup(){
@@ -2287,6 +2333,7 @@ async function importFullBackup(file){
     conceptVersions=(Array.isArray(b.conceptVersions)&&b.conceptVersions.length)?b.conceptVersions:defaultConceptVersions();
     activeConceptId=b.activeConceptId||(conceptVersions[0]&&conceptVersions[0].id)||'';
     usefulLinks=Array.isArray(b.usefulLinks)?b.usefulLinks:defaultUsefulLinks();
+    generalTodos=Array.isArray(b.generalTodos)?b.generalTodos:[];
     save();
     alert('Sauvegarde restaurée.');
   }catch(e){ alert('Impossible de restaurer cette sauvegarde : '+e.message); }

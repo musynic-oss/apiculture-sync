@@ -1,4 +1,4 @@
-const CACHE='apiculture-v1-26';
+const CACHE='apiculture-v1-27';
 const CORE=['./','./index.html','./manifest.webmanifest','./icon-192.png','./icon-512.png'];
 
 self.addEventListener('install',event=>{
